@@ -22,7 +22,7 @@ upper_blue = np.array([130,255,255],np.uint8)
 
 #영상 수집 구성
 cam = cv2.VideoCapture(0)
-aim = cv2.imread('aim.png')
+aim = cv2.imread('../media/aim.png')
 
 #전체화면 생각중
 
