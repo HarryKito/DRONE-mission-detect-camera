@@ -11,6 +11,8 @@ cap = cv2.VideoCapture('../media/fail.mp4')
 # 폭격지점
 aim = cv2.imread('../media/aim.png',cv2.IMREAD_COLOR)
 
+cv2.imshow('wa',aim)
+
 while(cap.isOpened()):
     ret, frame = cap.read()
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
