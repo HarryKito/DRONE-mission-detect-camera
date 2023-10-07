@@ -5,9 +5,6 @@ class mode: # 열거형 안되나..
     cam_modes = ["cam","detection","square aim","aim to specific","circle aim"] # C 키로 동작하도록
     flight_modes = ["manual flight","drop bomb","find target"] # F 키로 동작하도록
 
-    index = 0
-    cam = cv2.VideoCapture(index)
-
     current_cam = 0
     current_flight = 0
 
@@ -29,10 +26,9 @@ class mode: # 열거형 안되나..
     Canny_threshold2    = 57 #175 적절함
     area_scale          = 4000
 
-    def __init__(self,index) -> None:
-        self.index = index
+    def __init__(self) -> None:
         print("modes class activate")
-        
+
     def change_cam(self) -> None:
         self.current_cam = self.current_cam + 1 if len(self.cam_modes) - 1 > self.current_cam else  0
         print(" cam mode changed :: ",self.cam_modes[self.current_cam])
@@ -41,10 +37,12 @@ class mode: # 열거형 안되나..
         self.current_flight = self.current_flight + 1 if len(self.flight_modes) - 1 > self.current_flight else  0
         print(" flight mode changed :: ",self.flight_modes[self.current_flight])
 
+# 카메라 출력 제어부
     def cam_detection(self,frame):
         if self.cam_modes[self.current_cam] == "cam":
-            frame = cv2.filter2D(frame, -1, self.clearness)
-        
+            pass
+            #frame = cv2.filter2D(frame, -1, self.clearness)
+
         elif self.cam_modes[self.current_cam] == "detection":
             blurred = cv2.GaussianBlur(frame, (5, 5), 0)
             gray = cv2.cvtColor(blurred, cv2.COLOR_BGR2GRAY)
@@ -121,14 +119,13 @@ class mode: # 열거형 안되나..
 #    def draw_overlay(self,frame):
 #        if self.cam_modes[self.current_cam] == "square aim" or "circle aim":
 #        frame = cv2.addWeighted(frame,0.4,aim,0.1,0)
-
 # Mode class 끝
 
 if __name__ == "__main__":
-    
-    server = 0
-    Mode = mode(server)
-    cam = Mode.cam
+
+    server = 0#"rtsp://192.168.144.25:8554/main.264"
+    Mode = mode()
+    cam = cv2.VideoCapture(server)
 
     Mode.parameter_display()
 
@@ -153,14 +150,14 @@ if __name__ == "__main__":
 
         # 트랙 바 정보수집
         Mode.get_param()
+
         #카메라 데이터 수집
         _, frame = cam.read()
-        frame = cv2.addWeighted(frame,Mode.contrast, np.zeros(frame.shape, frame.dtype), 0, Mode.brightness)
   
         #영상처리
         Mode.cam_detection(frame)
 
-        cv2.line(img=frame, pt1=(120, 0), pt2=(120, 100), color=(255, 255, 255), thickness=5,lineType=8,shift=0)
+        cv2.line(img=frame, pt1=(0, 120), pt2=(800, 120), color=(255, 255, 255), thickness=5,lineType=8,shift=0)
         Mode.draw_text(frame, "brightness : "+str(Mode.brightness)+" contrast : "+str(Mode.contrast), font_scale=1, pos=(0, 0), text_color_bg=(0, 0,  0))
         cv2.imshow("target", frame)
 
